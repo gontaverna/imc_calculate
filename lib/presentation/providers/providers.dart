@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:imc/data/repositories/measurement_repository_firestore.dart';
@@ -44,15 +45,21 @@ final patientListProvider =
       return PatientListNotifier(repository);
     });
 
-class PatientListNotifier extends StateNotifier<AsyncValue<List<Patient>>> {
-  final PatientRepository _repository;
+  StreamSubscription? _subscription;
 
   PatientListNotifier(this._repository) : super(const AsyncValue.loading()) {
     loadPatients();
   }
 
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
   void loadPatients() {
-    _repository.getPatients().listen(
+    _subscription?.cancel();
+    _subscription = _repository.getPatients().listen(
       (patients) {
         state = AsyncValue.data(patients);
       },
@@ -86,14 +93,17 @@ final measurementListProvider =
       return MeasurementListNotifier(repository, patientId);
     });
 
-class MeasurementListNotifier
-    extends StateNotifier<AsyncValue<List<Measurement>>> {
-  final MeasurementRepository _repository;
-  final String patientId;
+  StreamSubscription? _subscription;
 
   MeasurementListNotifier(this._repository, this.patientId)
     : super(const AsyncValue.loading()) {
     loadMeasurements();
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 
   void loadMeasurements() {

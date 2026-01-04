@@ -11,9 +11,22 @@ class PatientListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final patientsAsync = ref.watch(patientListProvider);
 
+    final authState = ref.watch(authStateProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Personas'),
+        title: Column(
+          children: [
+            const Text('Personas'),
+            Text(
+              authState.value?.email ?? 'Invitado',
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.logout),
