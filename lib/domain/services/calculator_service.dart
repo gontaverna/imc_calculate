@@ -40,8 +40,9 @@ class HealthResult {
 
 class CalculatorService {
   HealthResult calculate(Patient patient, Measurement measurement) {
-    int age = patient.age;
-    bool isMale = patient.gender.toLowerCase() == 'male';
+    int age = measurement.ageAtMeasurement ?? patient.age;
+    String gender = measurement.genderAtMeasurement ?? patient.gender;
+    bool isMale = gender.toLowerCase() == 'male';
     double weight = measurement.weight;
     double height = measurement.height; // cm
 

@@ -29,25 +29,65 @@ class PatientListScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             itemBuilder: (context, index) {
               final patient = patients[index];
-              return Card(
-                elevation: 2,
-                margin: const EdgeInsets.only(bottom: 12),
-                child: ListTile(
-                  leading: CircleAvatar(child: Text(patient.name[0])),
-                  title: Text('${patient.name} ${patient.lastName}'),
-                  subtitle: Text(
-                    '${patient.age} años • ${patient.gender == 'male' ? 'Masculino' : 'Femenino'}',
+              return Dismissible(
+                key: Key(patient.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20.0),
+                  color: Colors.red,
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                confirmDismiss: (direction) async {
+                  return await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Eliminar Paciente'),
+                          content: Text(
+                            '¿Deseas eliminar a ${patient.name} ${patient.lastName} y sus mediciones?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text(
+                                'Eliminar',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ) ??
+                      false;
+                },
+                onDismissed: (direction) {
+                  ref
+                      .read(patientListProvider.notifier)
+                      .deletePatient(patient.id);
+                },
+                child: Card(
+                  elevation: 2,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: ListTile(
+                    leading: CircleAvatar(child: Text(patient.name[0])),
+                    title: Text('${patient.name} ${patient.lastName}'),
+                    subtitle: Text(
+                      '${patient.age} años • ${patient.gender == 'male' ? 'Masculino' : 'Femenino'}',
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PatientDetailScreen(patient: patient),
+                        ),
+                      );
+                    },
                   ),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PatientDetailScreen(patient: patient),
-                      ),
-                    );
-                  },
                 ),
               );
             },

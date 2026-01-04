@@ -23,6 +23,42 @@ class MeasurementDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(DateFormat('dd MMM yyyy').format(measurement.date)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Eliminar Medición'),
+                  content: const Text(
+                    '¿Estás seguro de que deseas eliminar esta medición?',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Cancelar'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text(
+                        'Eliminar',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmed == true) {
+                ref
+                    .read(measurementListProvider(patient.id).notifier)
+                    .deleteMeasurement(measurement.id);
+                Navigator.pop(context);
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

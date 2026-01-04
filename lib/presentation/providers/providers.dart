@@ -70,6 +70,15 @@ class PatientListNotifier extends StateNotifier<AsyncValue<List<Patient>>> {
     }
   }
 
+  Future<void> updatePatient(Patient patient) async {
+    try {
+      await _repository.updatePatient(patient);
+      await loadPatients();
+    } catch (e) {
+      // Handle error
+    }
+  }
+
   Future<void> deletePatient(String id) async {
     try {
       await _repository.deletePatient(id);
@@ -114,6 +123,15 @@ class MeasurementListNotifier
   Future<void> addMeasurement(Measurement measurement) async {
     try {
       await _repository.insertMeasurement(measurement);
+      await loadMeasurements();
+    } catch (e) {
+      // Handle error
+    }
+  }
+
+  Future<void> deleteMeasurement(String id) async {
+    try {
+      await _repository.deleteMeasurement(id);
       await loadMeasurements();
     } catch (e) {
       // Handle error

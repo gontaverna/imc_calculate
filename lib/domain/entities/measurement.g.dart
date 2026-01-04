@@ -23,13 +23,15 @@ class MeasurementAdapter extends TypeAdapter<Measurement> {
       weight: fields[3] as double,
       height: fields[4] as double,
       activityFactor: fields[5] as double,
+      ageAtMeasurement: fields[6] as int?,
+      genderAtMeasurement: fields[7] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Measurement obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +43,11 @@ class MeasurementAdapter extends TypeAdapter<Measurement> {
       ..writeByte(4)
       ..write(obj.height)
       ..writeByte(5)
-      ..write(obj.activityFactor);
+      ..write(obj.activityFactor)
+      ..writeByte(6)
+      ..write(obj.ageAtMeasurement)
+      ..writeByte(7)
+      ..write(obj.genderAtMeasurement);
   }
 
   @override

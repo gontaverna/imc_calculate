@@ -17,6 +17,11 @@ class Measurement {
   @HiveField(5)
   final double activityFactor; // 1.2, 1.375, etc.
 
+  @HiveField(6)
+  final int? ageAtMeasurement;
+  @HiveField(7)
+  final String? genderAtMeasurement;
+
   Measurement({
     required this.id,
     required this.patientId,
@@ -24,5 +29,7 @@ class Measurement {
     required this.weight,
     required this.height,
     required this.activityFactor,
+    this.ageAtMeasurement,
+    this.genderAtMeasurement,
   });
 }
