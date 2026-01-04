@@ -8,6 +8,11 @@ class MeasurementRepositoryFirestore implements MeasurementRepository {
 
   MeasurementRepositoryFirestore(this.userId);
 
+  CollectionReference get _collection => _firestore
+      .collection('users')
+      .doc(userId ?? 'global')
+      .collection('measurements');
+
   @override
   Stream<List<Measurement>> getMeasurements(String patientId) {
     return _collection.where('patientId', isEqualTo: patientId).snapshots().map(

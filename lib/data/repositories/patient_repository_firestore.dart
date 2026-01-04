@@ -8,6 +8,11 @@ class PatientRepositoryFirestore implements PatientRepository {
 
   PatientRepositoryFirestore(this.userId);
 
+  CollectionReference get _collection => _firestore
+      .collection('users')
+      .doc(userId ?? 'global')
+      .collection('patients');
+
   @override
   Stream<List<Patient>> getPatients() {
     return _collection.snapshots().map((snapshot) {
