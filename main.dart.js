@@ -91096,13 +91096,13 @@ uw(){var s=0,r=A.N(t.H),q,p=2,o=[],n=[],m=this,l,k,j,i,h,g,f,e
 var $async$uw=A.J(function(a,b){if(a===1){o.push(b)
 s=p}for(;;)switch(s){case 0:h=B.c.hm(m.w.a.a)
 g=B.c.hm(m.x.a.a)
-if(h.toLowerCase()!=="admin"||g!=="admin"){m.c.aj(t.Pu).f.xy(B.Sl)
+if(h.toLowerCase()!=="admin"||g.toLowerCase()!=="admin"){m.c.aj(t.Pu).f.xy(B.Sl)
 s=1
 break}m.af(new A.avg(m))
 p=4
 p=8
 s=11
-return A.P(m.gpt().iA(0,$.a3x(),t.m5).xz("admin@imc-app.com","admin123456"),$async$uw)
+return A.P(m.gpt().iA(0,$.a3x(),t.m5).xz("admin@persona-tracker-app.com","admin123456"),$async$uw)
 case 11:p=4
 s=10
 break
@@ -91115,10 +91115,11 @@ case 12:l=h
 s=l.c==="user-not-found"||l.c==="invalid-credential"||l.c==="invalid-email"||l.c==="wrong-password"?15:17
 break
 case 15:s=18
-return A.P(m.gpt().iA(0,$.a3x(),t.m5).Aw("admin@imc-app.com","admin123456"),$async$uw)
+return A.P(m.gpt().iA(0,$.a3x(),t.m5).Aw("admin@persona-tracker-app.com","admin123456"),$async$uw)
 case 18:s=16
 break
-case 17:throw f
+case 17:if(l.c==="operation-not-allowed")throw A.e('\u26a0\ufe0f Error: El m\xe9todo "Email/Password" no est\xe1 activado en tu proyecto de Firebase.')
+else throw f
 case 16:s=13
 break
 case 14:throw f
@@ -91134,7 +91135,7 @@ e=o.pop()
 h=A.ae(e)
 if(h instanceof A.qB){k=h
 m.c.aj(t.Pu).f.xy(A.aEj(null,null,null,B.kZ,null,B.M,null,A.bP("Error ("+k.c+"): "+A.l(k.b),null,null,null,null,null,null,null),null,B.hg,null,null,null,null,null,null,null,null,null,null))}else{j=h
-m.c.aj(t.Pu).f.xy(A.aEj(null,null,null,null,null,B.M,null,A.bP("Error inesperado: "+A.l(j),null,null,null,null,null,null,null),null,B.hg,null,null,null,null,null,null,null,null,null,null))}n.push(6)
+m.c.aj(t.Pu).f.xy(A.aEj(null,null,null,null,null,B.M,null,A.bP(A.l(j),null,null,null,null,null,null,null),null,B.hg,null,null,null,null,null,null,null,null,null,null))}n.push(6)
 s=5
 break
 case 3:n=[2]
