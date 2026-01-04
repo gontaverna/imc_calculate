@@ -25,12 +25,12 @@ final authStateProvider = StreamProvider<User?>((ref) {
 
 // Repositories
 final patientRepositoryProvider = Provider<PatientRepository>((ref) {
-  final user = ref.watch(authStateProvider).value;
+  final user = ref.watch(authStateProvider).asData?.value;
   return PatientRepositoryFirestore(user?.uid);
 });
 
 final measurementRepositoryProvider = Provider<MeasurementRepository>((ref) {
-  final user = ref.watch(authStateProvider).value;
+  final user = ref.watch(authStateProvider).asData?.value;
   return MeasurementRepositoryFirestore(user?.uid);
 });
 
@@ -45,6 +45,8 @@ final patientListProvider =
       return PatientListNotifier(repository);
     });
 
+class PatientListNotifier extends StateNotifier<AsyncValue<List<Patient>>> {
+  final PatientRepository _repository;
   StreamSubscription? _subscription;
 
   PatientListNotifier(this._repository) : super(const AsyncValue.loading()) {
@@ -93,6 +95,10 @@ final measurementListProvider =
       return MeasurementListNotifier(repository, patientId);
     });
 
+class MeasurementListNotifier
+    extends StateNotifier<AsyncValue<List<Measurement>>> {
+  final MeasurementRepository _repository;
+  final String patientId;
   StreamSubscription? _subscription;
 
   MeasurementListNotifier(this._repository, this.patientId)
@@ -107,7 +113,8 @@ final measurementListProvider =
   }
 
   void loadMeasurements() {
-    _repository
+    _subscription?.cancel();
+    _subscription = _repository
         .getMeasurements(patientId)
         .listen(
           (measurements) {
