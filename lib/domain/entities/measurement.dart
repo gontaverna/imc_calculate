@@ -32,4 +32,30 @@ class Measurement {
     this.ageAtMeasurement,
     this.genderAtMeasurement,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'patientId': patientId,
+      'date': date.toIso8601String(),
+      'weight': weight,
+      'height': height,
+      'activityFactor': activityFactor,
+      'ageAtMeasurement': ageAtMeasurement,
+      'genderAtMeasurement': genderAtMeasurement,
+    };
+  }
+
+  factory Measurement.fromMap(Map<String, dynamic> map) {
+    return Measurement(
+      id: map['id'] ?? '',
+      patientId: map['patientId'] ?? '',
+      date: map['date'] != null ? DateTime.parse(map['date']) : DateTime.now(),
+      weight: (map['weight'] ?? 0).toDouble(),
+      height: (map['height'] ?? 0).toDouble(),
+      activityFactor: (map['activityFactor'] ?? 1.2).toDouble(),
+      ageAtMeasurement: map['ageAtMeasurement'],
+      genderAtMeasurement: map['genderAtMeasurement'],
+    );
+  }
 }

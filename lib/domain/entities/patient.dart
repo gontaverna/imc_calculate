@@ -35,4 +35,30 @@ class Patient {
     }
     return age;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'lastName': lastName,
+      'gender': gender,
+      'birthDate': birthDate.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
+  factory Patient.fromMap(Map<String, dynamic> map) {
+    return Patient(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      lastName: map['lastName'] ?? '',
+      gender: map['gender'] ?? 'male',
+      birthDate: map['birthDate'] != null
+          ? DateTime.parse(map['birthDate'])
+          : DateTime.now(),
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
+          : DateTime.now(),
+    );
+  }
 }

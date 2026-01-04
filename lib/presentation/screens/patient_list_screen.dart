@@ -12,7 +12,14 @@ class PatientListScreen extends ConsumerWidget {
     final patientsAsync = ref.watch(patientListProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Personas'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Personas'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () => ref.read(firebaseAuthProvider).signOut(),
+        ),
+      ),
       body: patientsAsync.when(
         data: (patients) {
           if (patients.isEmpty) {

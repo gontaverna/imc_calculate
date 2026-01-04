@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:imc/data/repositories/measurement_repository_impl.dart';
-import 'package:imc/data/repositories/patient_repository_impl.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:imc/data/repositories/measurement_repository_firestore.dart';
+import 'package:imc/data/repositories/patient_repository_firestore.dart';
 import 'package:imc/domain/entities/measurement.dart';
 import 'package:imc/domain/entities/patient.dart';
 import 'package:imc/domain/repositories/measurement_repository.dart';
@@ -13,24 +13,24 @@ final calculatorServiceProvider = Provider<CalculatorService>((ref) {
   return CalculatorService();
 });
 
-// Hive Boxes
-final patientBoxProvider = Provider<Box<Patient>>((ref) {
-  return Hive.box<Patient>('patients');
+// Firebase Auth
+final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
+  return FirebaseAuth.instance;
 });
 
-final measurementBoxProvider = Provider<Box<Measurement>>((ref) {
-  return Hive.box<Measurement>('measurements');
+final authStateProvider = StreamProvider<User?>((ref) {
+  return ref.watch(firebaseAuthProvider).authStateChanges();
 });
 
 // Repositories
 final patientRepositoryProvider = Provider<PatientRepository>((ref) {
-  final box = ref.watch(patientBoxProvider);
-  return PatientRepositoryImpl(box);
+  final user = ref.watch(authStateProvider).value;
+  return PatientRepositoryFirestore(user?.uid);
 });
 
 final measurementRepositoryProvider = Provider<MeasurementRepository>((ref) {
-  final box = ref.watch(measurementBoxProvider);
-  return MeasurementRepositoryImpl(box);
+  final user = ref.watch(authStateProvider).value;
+  return MeasurementRepositoryFirestore(user?.uid);
 });
 
 // State Notifiers / Controllers
