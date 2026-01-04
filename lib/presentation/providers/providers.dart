@@ -51,41 +51,27 @@ class PatientListNotifier extends StateNotifier<AsyncValue<List<Patient>>> {
     loadPatients();
   }
 
-  Future<void> loadPatients() async {
-    try {
-      state = const AsyncValue.loading();
-      final patients = await _repository.getPatients();
-      state = AsyncValue.data(patients);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
+  void loadPatients() {
+    _repository.getPatients().listen(
+      (patients) {
+        state = AsyncValue.data(patients);
+      },
+      onError: (e, st) {
+        state = AsyncValue.error(e, st);
+      },
+    );
   }
 
   Future<void> addPatient(Patient patient) async {
-    try {
-      await _repository.insertPatient(patient);
-      await loadPatients();
-    } catch (e) {
-      // Handle error
-    }
+    await _repository.insertPatient(patient);
   }
 
   Future<void> updatePatient(Patient patient) async {
-    try {
-      await _repository.updatePatient(patient);
-      await loadPatients();
-    } catch (e) {
-      // Handle error
-    }
+    await _repository.updatePatient(patient);
   }
 
   Future<void> deletePatient(String id) async {
-    try {
-      await _repository.deletePatient(id);
-      await loadPatients();
-    } catch (e) {
-      // Handle error
-    }
+    await _repository.deletePatient(id);
   }
 }
 
@@ -110,31 +96,24 @@ class MeasurementListNotifier
     loadMeasurements();
   }
 
-  Future<void> loadMeasurements() async {
-    try {
-      state = const AsyncValue.loading();
-      final measurements = await _repository.getMeasurements(patientId);
-      state = AsyncValue.data(measurements);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
+  void loadMeasurements() {
+    _repository
+        .getMeasurements(patientId)
+        .listen(
+          (measurements) {
+            state = AsyncValue.data(measurements);
+          },
+          onError: (e, st) {
+            state = AsyncValue.error(e, st);
+          },
+        );
   }
 
   Future<void> addMeasurement(Measurement measurement) async {
-    try {
-      await _repository.insertMeasurement(measurement);
-      await loadMeasurements();
-    } catch (e) {
-      // Handle error
-    }
+    await _repository.insertMeasurement(measurement);
   }
 
   Future<void> deleteMeasurement(String id) async {
-    try {
-      await _repository.deleteMeasurement(id);
-      await loadMeasurements();
-    } catch (e) {
-      // Handle error
-    }
+    await _repository.deleteMeasurement(id);
   }
 }
