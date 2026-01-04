@@ -16,9 +16,9 @@ class PatientDetailScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar Paciente'),
+        title: const Text('Eliminar Persona'),
         content: const Text(
-          '¿Estás seguro de que deseas eliminar este paciente y todas sus mediciones?',
+          '¿Estás seguro de que deseas eliminar esta persona y todas sus mediciones?',
         ),
         actions: [
           TextButton(

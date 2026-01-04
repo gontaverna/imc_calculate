@@ -12,13 +12,13 @@ class PatientListScreen extends ConsumerWidget {
     final patientsAsync = ref.watch(patientListProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Pacientes'), centerTitle: true),
+      appBar: AppBar(title: const Text('Personas'), centerTitle: true),
       body: patientsAsync.when(
         data: (patients) {
           if (patients.isEmpty) {
             return const Center(
               child: Text(
-                'No hay pacientes registrados.\nAgrega uno para comenzar.',
+                'No hay personas registradas.\nAgrega una para comenzar.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
@@ -42,7 +42,7 @@ class PatientListScreen extends ConsumerWidget {
                   return await showDialog<bool>(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: const Text('Eliminar Paciente'),
+                          title: const Text('Eliminar Persona'),
                           content: Text(
                             '¿Deseas eliminar a ${patient.name} ${patient.lastName} y sus mediciones?',
                           ),

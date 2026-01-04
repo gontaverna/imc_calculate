@@ -70,7 +70,7 @@ class _EditPatientScreenState extends ConsumerState<EditPatientScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Editar Paciente')),
+      appBar: AppBar(title: const Text('Editar Persona')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(

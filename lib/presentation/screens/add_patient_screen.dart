@@ -58,7 +58,7 @@ class _AddPatientScreenState extends ConsumerState<AddPatientScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Nuevo Paciente')),
+      appBar: AppBar(title: const Text('Nueva Persona')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -122,7 +122,7 @@ class _AddPatientScreenState extends ConsumerState<AddPatientScreen> {
               const SizedBox(height: 24),
               FilledButton(
                 onPressed: _savePatient,
-                child: const Text('Guardar Paciente'),
+                child: const Text('Guardar Persona'),
               ),
             ],
           ),
