@@ -11,33 +11,48 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _emailController = TextEditingController();
+  final _userController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isLogin = true;
   bool _isLoading = false;
 
   void _submit() async {
+    final user = _userController.text.trim();
+    final pass = _passwordController.text.trim();
+
+    if (user != 'admin' || pass != 'admin') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuario o contraseña incorrectos')),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
     try {
-      if (_isLogin) {
+      const techEmail = 'admin@imc.com';
+      const techPass = 'admin123456';
+
+      try {
         await ref
             .read(firebaseAuthProvider)
-            .signInWithEmailAndPassword(
-              email: _emailController.text.trim(),
-              password: _passwordController.text.trim(),
-            );
-      } else {
-        await ref
-            .read(firebaseAuthProvider)
-            .createUserWithEmailAndPassword(
-              email: _emailController.text.trim(),
-              password: _passwordController.text.trim(),
-            );
+            .signInWithEmailAndPassword(email: techEmail, password: techPass);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found' ||
+            e.code == 'invalid-credential' ||
+            e.code == 'invalid-email') {
+          await ref
+              .read(firebaseAuthProvider)
+              .createUserWithEmailAndPassword(
+                email: techEmail,
+                password: techPass,
+              );
+        } else {
+          rethrow;
+        }
       }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(e.message ?? 'Ocurrió un error')));
+      ).showSnackBar(SnackBar(content: Text('Error: ${e.message}')));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -46,21 +61,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_isLogin ? 'Iniciar Sesión' : 'Crear Cuenta')),
+      appBar: AppBar(title: const Text('Acceso Administrador')),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.cloud_sync, size: 80, color: Colors.teal),
+            const Icon(Icons.lock_person, size: 80, color: Colors.teal),
             const SizedBox(height: 32),
             TextField(
-              controller: _emailController,
+              controller: _userController,
               decoration: const InputDecoration(
-                labelText: 'Email',
+                labelText: 'Usuario',
                 border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.person),
               ),
-              keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
             TextField(
@@ -68,29 +83,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               decoration: const InputDecoration(
                 labelText: 'Contraseña',
                 border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.password),
               ),
               obscureText: true,
             ),
             const SizedBox(height: 24),
             _isLoading
                 ? const CircularProgressIndicator()
-                : FilledButton(
-                    onPressed: _submit,
-                    child: Text(_isLogin ? 'Entrar' : 'Registrarse'),
+                : SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: FilledButton(
+                      onPressed: _submit,
+                      child: const Text('Entrar'),
+                    ),
                   ),
-            TextButton(
-              onPressed: () => setState(() => _isLogin = !_isLogin),
-              child: Text(
-                _isLogin
-                    ? '¿No tienes cuenta? Regístrate'
-                    : '¿Ya tienes cuenta? Inicia sesión',
-              ),
-            ),
             const Spacer(),
             const Text(
-              'Usa la misma cuenta en tu PC y Celular para sincronizar tus personas.',
+              'Usa "admin" / "admin" para sincronizar tus dispositivos.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey, fontSize: 12),
+              style: TextStyle(color: Colors.grey, fontSize: 13),
             ),
           ],
         ),
