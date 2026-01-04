@@ -16,7 +16,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _isLoading = false;
 
   void _submit() async {
-    final user = _userController.text.trim();
+    final user = _userController.text.trim().toLowerCase();
     final pass = _passwordController.text.trim();
 
     if (user != 'admin' || pass != 'admin') {
@@ -28,7 +28,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      const techEmail = 'admin@imc.com';
+      // Usamos un correo técnico interno
+      const techEmail = 'admin@imc-app.com';
       const techPass = 'admin123456';
 
       try {
@@ -36,9 +37,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             .read(firebaseAuthProvider)
             .signInWithEmailAndPassword(email: techEmail, password: techPass);
       } on FirebaseAuthException catch (e) {
+        // Códigos comunes que indican que el usuario no existe o hay que crearlo
         if (e.code == 'user-not-found' ||
             e.code == 'invalid-credential' ||
-            e.code == 'invalid-email') {
+            e.code == 'invalid-email' ||
+            e.code == 'wrong-password') {
           await ref
               .read(firebaseAuthProvider)
               .createUserWithEmailAndPassword(
@@ -50,9 +53,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         }
       }
     } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error (${e.code}): ${e.message}'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Error: ${e.message}')));
+      ).showSnackBar(SnackBar(content: Text('Error inesperado: $e')));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
