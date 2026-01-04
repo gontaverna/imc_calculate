@@ -8,18 +8,14 @@ class PatientRepositoryFirestore implements PatientRepository {
 
   PatientRepositoryFirestore(this.userId);
 
-  CollectionReference get _collection => _firestore
-      .collection('users')
-      .doc(userId ?? 'global')
-      .collection('patients');
-
   @override
-  Future<List<Patient>> getPatients() async {
-    final snapshot = await _collection.get();
-    return snapshot.docs
-        .map((doc) => Patient.fromMap(doc.data() as Map<String, dynamic>))
-        .toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
+  Stream<List<Patient>> getPatients() {
+    return _collection.snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => Patient.fromMap(doc.data() as Map<String, dynamic>))
+          .toList()
+        ..sort((a, b) => a.name.compareTo(b.name));
+    });
   }
 
   @override

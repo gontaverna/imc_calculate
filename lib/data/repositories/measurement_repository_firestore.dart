@@ -8,20 +8,18 @@ class MeasurementRepositoryFirestore implements MeasurementRepository {
 
   MeasurementRepositoryFirestore(this.userId);
 
-  CollectionReference get _collection => _firestore
-      .collection('users')
-      .doc(userId ?? 'global')
-      .collection('measurements');
-
   @override
-  Future<List<Measurement>> getMeasurements(String patientId) async {
-    final snapshot = await _collection
-        .where('patientId', isEqualTo: patientId)
-        .get();
-    return snapshot.docs
-        .map((doc) => Measurement.fromMap(doc.data() as Map<String, dynamic>))
-        .toList()
-      ..sort((a, b) => b.date.compareTo(a.date));
+  Stream<List<Measurement>> getMeasurements(String patientId) {
+    return _collection.where('patientId', isEqualTo: patientId).snapshots().map(
+      (snapshot) {
+        return snapshot.docs
+            .map(
+              (doc) => Measurement.fromMap(doc.data() as Map<String, dynamic>),
+            )
+            .toList()
+          ..sort((a, b) => b.date.compareTo(a.date));
+      },
+    );
   }
 
   @override
